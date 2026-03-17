@@ -1,7 +1,6 @@
 
   # Health Tracking Dashboard
 
-  This is a code bundle for Health Tracking Dashboard. The original project is available at https://www.figma.com/design/8bx57FbxcecqV1mAawoTQx/Health-Tracking-Dashboard.
 
   ## Running the code
 
