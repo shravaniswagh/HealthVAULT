@@ -1,4 +1,5 @@
-const BASE_URL = `${window.location.protocol}//${window.location.hostname}:3001/api`;
+export const ASSET_URL = import.meta.env.VITE_ASSET_URL || `${window.location.protocol}//${window.location.hostname}:3001`;
+const BASE_URL = import.meta.env.VITE_API_URL || `${ASSET_URL}/api`;
 
 function getToken(): string | null {
   return localStorage.getItem('hv_token');

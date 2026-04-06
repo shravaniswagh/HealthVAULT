@@ -9,7 +9,7 @@ import {
   AlertCircle, ArrowRight, FileText, Upload, ChevronRight, Activity,
   Heart, Brain, RefreshCw, Eye,
 } from "lucide-react";
-import { api } from "../lib/api";
+import { api, ASSET_URL } from "../lib/api";
 import { useAuth } from "../contexts/AuthContext";
 
 const statusColors: Record<string, string> = {
@@ -385,7 +385,7 @@ export function Dashboard() {
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
                     <FileText className="w-5 h-5 text-blue-500" />
                   </div>
-                  <div className="flex-1 min-w-0" onClick={() => window.open(`http://localhost:3001${report.file_path}`, '_blank')}>
+                  <div className="flex-1 min-w-0" onClick={() => window.open(`${ASSET_URL}${report.file_path}`, '_blank')}>
                     <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-blue-600 transition-colors">{report.name}</p>
                     <p className="text-xs text-gray-400">{report.lab} · {new Date(report.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
                   </div>
@@ -395,7 +395,7 @@ export function Dashboard() {
                     </span>
                     <button onClick={(e) => {
                       e.stopPropagation();
-                      window.open(`http://localhost:3001${report.file_path}`, '_blank');
+                      window.open(`${ASSET_URL}${report.file_path}`, '_blank');
                     }}
                       className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                       title="View PDF">
