@@ -1,0 +1,33 @@
+<<<<<<< HEAD
+.env
+=======
+node_modules
+backend/.env
+# Node modules
+node_modules/
+backend/node_modules/
+
+# Environment variables (VERY IMPORTANT)
+.env
+backend/.env
+
+# Logs
+*.log
+
+# Database files (SQLite)
+*.db
+*.db-shm
+*.db-wal
+
+# Build folders
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+>>>>>>> 871a0665dab4a7469f8242dfd083f93748b3b713
