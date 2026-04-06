@@ -80,6 +80,23 @@ async function initDB() {
         read BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS cycle_logs (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        period_start DATE NOT NULL,
+        period_end DATE,
+        cycle_length INTEGER,
+        flow_level VARCHAR(20),
+        symptoms TEXT[],
+        mood VARCHAR(50),
+        pain_level INTEGER,
+        notes TEXT,
+        temperature REAL,
+        cervical_mucus VARCHAR(50),
+        is_ovulation_day BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
     console.log('PostgreSQL database initialized successfully.');
   } catch (err) {
