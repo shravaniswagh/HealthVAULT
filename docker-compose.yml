@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  healthvault:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    # Pass an actual Google API key below or via your terminal environment to test the AI
+    # - GEMINI_API_KEY=your_key_here
+    volumes:
+      - healthvault_data:/app/backend
+      # We mount the entire backend so the SQLite DB state and uploads survive container restarts
+
+volumes:
+  healthvault_data:

@@ -35,6 +35,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Serve frontend in production/Docker
+const staticDistPath = path.join(__dirname, '../dist');
+if (fs.existsSync(staticDistPath)) {
+  app.use(express.static(staticDistPath));
+  // Catch-all route to serve React's index.html for client-side routing
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(staticDistPath, 'index.html'));
+  });
+}
+
 app.listen(PORT, () => {
   console.log(`HealthVault backend running on http://localhost:${PORT}`);
 });
