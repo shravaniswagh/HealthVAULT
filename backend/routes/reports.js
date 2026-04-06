@@ -250,4 +250,31 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 module.exports = router;
+=======
+// GET /api/reports/download/:id — force-download the original PDF
+router.get('/download/:id', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT * FROM reports WHERE id = $1 AND user_id = $2',
+      [req.params.id, req.user.id]
+    );
+    if (rows.length === 0) return res.status(404).json({ error: 'Report not found' });
+    const report = rows[0];
+
+    const filePath = path.join(__dirname, '..', report.file_path);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found on server' });
+
+    res.setHeader('Content-Disposition', `attachment; filename="${report.name || 'report'}.pdf"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.sendFile(path.resolve(filePath));
+  } catch (err) {
+    console.error('Download error:', err);
+    res.status(500).json({ error: 'Download failed' });
+  }
+});
+
+module.exports = router;
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf

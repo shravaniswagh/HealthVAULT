@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  healthvault:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      # Automatically connect to the Docker PostgreSQL container
+      - DATABASE_URL=postgresql://postgres:root@healthvault-db:5432/medical_history
+    depends_on:
+      - healthvault-db
+    volumes:
+      - healthvault_data:/app/backend
+
+  healthvault-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=medical_history
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  healthvault_data:
+  postgres_data:

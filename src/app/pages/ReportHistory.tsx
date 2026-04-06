@@ -1,16 +1,30 @@
 import { useState, useEffect } from "react";
 import {
+<<<<<<< HEAD
   FileText, CheckCircle2, Eye, Download, Trash2, Search, Calendar, Upload,
+=======
+  FileText, CheckCircle2, Eye, Download, Search, Calendar, Upload, Loader2,
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { api } from "../lib/api";
 
+<<<<<<< HEAD
+=======
+const BACKEND_BASE = `${window.location.protocol}//${window.location.hostname}:3001`;
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 export function ReportHistory() {
   const navigate = useNavigate();
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedReport, setSelectedReport] = useState<any | null>(null);
+<<<<<<< HEAD
+=======
+  const [downloadingId, setDownloadingId] = useState<number | null>(null);
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 
   useEffect(() => {
     api.getReports()
@@ -106,7 +120,11 @@ export function ReportHistory() {
                       className="flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl transition-colors">
                       <FileText className="w-3.5 h-3.5" /> Details
                     </button>
+<<<<<<< HEAD
                     <button onClick={() => window.open(`http://localhost:3001${report.file_path}`, '_blank')}
+=======
+                    <button onClick={() => window.open(`${BACKEND_BASE}${report.file_path}`, '_blank')}
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
                       className="flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-xl transition-colors">
                       <Eye className="w-3.5 h-3.5" /> View PDF
                     </button>
@@ -145,6 +163,7 @@ export function ReportHistory() {
                   <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-xl p-3">{selectedReport.notes}</p>
                 </div>
               )}
+<<<<<<< HEAD
               
               <div className="pt-4 mt-4 border-t border-gray-100 flex gap-3">
                 <button onClick={() => window.open(`http://localhost:3001${selectedReport.file_path}`, '_blank')}
@@ -162,6 +181,34 @@ export function ReportHistory() {
                   <Download className="w-4 h-4" /> Download
                 </button>
               </div>
+=======
+                <div className="pt-4 mt-4 border-t border-gray-100 flex gap-3">
+                  <button onClick={() => window.open(`${BACKEND_BASE}${selectedReport.file_path}`, '_blank')}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-50 text-blue-600 text-sm font-semibold hover:bg-blue-100 transition-colors">
+                    <Eye className="w-4 h-4" /> View PDF
+                  </button>
+                  <button
+                    disabled={downloadingId === selectedReport.id}
+                    onClick={async () => {
+                      setDownloadingId(selectedReport.id);
+                      try {
+                        await api.downloadReport(selectedReport.id, selectedReport.name || 'report');
+                      } catch {
+                        alert('Download failed. Please try again.');
+                      } finally {
+                        setDownloadingId(null);
+                      }
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-50 text-gray-700 text-sm font-semibold hover:bg-gray-100 transition-colors border border-gray-200 disabled:opacity-60"
+                  >
+                    {downloadingId === selectedReport.id
+                      ? <><Loader2 className="w-4 h-4 animate-spin" /> Downloading...</>
+                      : <><Download className="w-4 h-4" /> Download</>
+                    }
+                  </button>
+                </div>
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
             </div>
           </div>
         </div>

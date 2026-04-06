@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+<<<<<<< HEAD
 import { CheckCircle2, Plus, Trash2, Save, Info, Loader2 } from "lucide-react";
+=======
+import { CheckCircle2, Plus, Trash2, Save, Info, Loader2, PenLine } from "lucide-react";
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 import { api } from "../lib/api";
 
 const metricTemplates: any[] = [
@@ -36,6 +40,15 @@ interface EntryRow {
   metricId: string;
   value: string;
   notes: string;
+<<<<<<< HEAD
+=======
+  isCustom?: boolean;
+  customName?: string;
+  customUnit?: string;
+  customMin?: string;
+  customMax?: string;
+  customCategory?: string;
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 }
 
 function getStatus(value: number, min: number, max: number) {
@@ -48,7 +61,11 @@ function getStatus(value: number, min: number, max: number) {
   return "borderline";
 }
 
+<<<<<<< HEAD
 const statusColors = {
+=======
+const statusColors: Record<string, string> = {
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
   normal: "text-emerald-600 bg-emerald-50",
   borderline: "text-amber-600 bg-amber-50",
   high: "text-red-600 bg-red-50",
@@ -56,6 +73,23 @@ const statusColors = {
   critical: "text-red-900 bg-red-100",
 };
 
+<<<<<<< HEAD
+=======
+const categoryOptions = ["Cardiovascular", "Metabolic", "Nutritional", "Renal", "Thyroid", "Hematology", "Vitals", "Body Measurements", "Other"];
+
+const emptyCustom = (): EntryRow => ({
+  metricId: `custom-${Date.now()}`,
+  value: "",
+  notes: "",
+  isCustom: true,
+  customName: "",
+  customUnit: "",
+  customMin: "",
+  customMax: "",
+  customCategory: "Other",
+});
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 export function ManualEntry() {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -68,6 +102,11 @@ export function ManualEntry() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [saved, setSaved] = useState(false);
   const [search, setSearch] = useState("");
+<<<<<<< HEAD
+=======
+  const [saving, setSaving] = useState(false);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 
   const addEntry = (metricId: string) => {
     if (!entries.find((e) => e.metricId === metricId)) {
@@ -75,10 +114,19 @@ export function ManualEntry() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const addCustomEntry = () => {
+    setEntries((prev) => [...prev, emptyCustom()]);
+    setShowCustomForm(false);
+  };
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
   const removeEntry = (index: number) => {
     setEntries((prev) => prev.filter((_, i) => i !== index));
   };
 
+<<<<<<< HEAD
   const updateEntry = (index: number, field: "value" | "notes", value: string) => {
     setEntries((prev) => prev.map((e, i) => i === index ? { ...e, [field]: value } : e));
   };
@@ -107,6 +155,48 @@ export function ManualEntry() {
       setSaved(true);
     } catch (err) {
       console.error('Save failed:', err);
+=======
+  const updateEntry = (index: number, field: keyof EntryRow, value: string) => {
+    setEntries((prev) => prev.map((e, i) => i === index ? { ...e, [field]: value } : e));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      for (const entry of entries) {
+        if (!entry.value || isNaN(parseFloat(entry.value))) continue;
+
+        if (entry.isCustom) {
+          if (!entry.customName?.trim()) continue;
+          await api.createMetric({
+            name: entry.customName.trim(),
+            shortName: entry.customName.trim(),
+            value: parseFloat(entry.value),
+            unit: entry.customUnit || "",
+            normalMin: entry.customMin ? parseFloat(entry.customMin) : null,
+            normalMax: entry.customMax ? parseFloat(entry.customMax) : null,
+            category: entry.customCategory || "Other",
+            description: entry.notes || "",
+          });
+        } else {
+          const metric = allMetrics.find((m) => m.id === entry.metricId);
+          if (!metric) continue;
+          await api.createMetric({
+            name: metric.name,
+            shortName: metric.name,
+            value: parseFloat(entry.value),
+            unit: metric.unit,
+            normalMin: metric.normalMin,
+            normalMax: metric.normalMax,
+            category: metric.category,
+            description: entry.notes || "",
+          });
+        }
+      }
+      setSaved(true);
+    } catch (err) {
+      console.error("Save failed:", err);
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
     } finally {
       setSaving(false);
     }
@@ -119,6 +209,14 @@ export function ManualEntry() {
     return matchCat && matchSearch && notAdded;
   });
 
+<<<<<<< HEAD
+=======
+  const filledCount = entries.filter((e) => {
+    if (e.isCustom) return e.value && e.customName?.trim();
+    return e.value;
+  }).length;
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
   if (saved) {
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[60vh]">
@@ -127,7 +225,11 @@ export function ManualEntry() {
         </div>
         <h3 className="text-xl font-bold text-gray-800 mb-2">Data Saved!</h3>
         <p className="text-sm text-gray-500 mb-6 text-center">
+<<<<<<< HEAD
           {entries.filter(e => e.value).length} health values have been recorded and your health score has been updated.
+=======
+          {filledCount} health values have been recorded and your health score has been updated.
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
         </p>
         <div className="flex gap-3">
           <button
@@ -196,7 +298,11 @@ export function ManualEntry() {
           <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-700">Health Values</h3>
+<<<<<<< HEAD
               <span className="text-xs text-gray-400">{entries.filter(e => e.value).length} filled</span>
+=======
+              <span className="text-xs text-gray-400">{filledCount} filled</span>
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
             </div>
 
             {entries.length === 0 ? (
@@ -207,6 +313,88 @@ export function ManualEntry() {
             ) : (
               <div className="space-y-3">
                 {entries.map((entry, i) => {
+<<<<<<< HEAD
+=======
+                  if (entry.isCustom) {
+                    // ─── Custom metric row ───
+                    return (
+                      <div key={i} className="p-4 rounded-xl border-2 border-dashed border-blue-200 bg-blue-50/40 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-blue-700 uppercase tracking-wider flex items-center gap-1.5">
+                            <PenLine className="w-3.5 h-3.5" /> Custom Metric
+                          </span>
+                          <button onClick={() => removeEntry(i)} className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="col-span-2">
+                            <label className="block text-[11px] text-gray-400 mb-1">Metric Name *</label>
+                            <input
+                              type="text"
+                              value={entry.customName || ""}
+                              onChange={(e) => updateEntry(i, "customName", e.target.value)}
+                              placeholder="e.g. Ferritin, Cortisol..."
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-gray-400 mb-1">Value *</label>
+                            <input
+                              type="number"
+                              value={entry.value}
+                              onChange={(e) => updateEntry(i, "value", e.target.value)}
+                              placeholder="0.0"
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white font-semibold"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-gray-400 mb-1">Unit</label>
+                            <input
+                              type="text"
+                              value={entry.customUnit || ""}
+                              onChange={(e) => updateEntry(i, "customUnit", e.target.value)}
+                              placeholder="mg/dL, %, bpm..."
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-gray-400 mb-1">Normal Min</label>
+                            <input
+                              type="number"
+                              value={entry.customMin || ""}
+                              onChange={(e) => updateEntry(i, "customMin", e.target.value)}
+                              placeholder="e.g. 70"
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] text-gray-400 mb-1">Normal Max</label>
+                            <input
+                              type="number"
+                              value={entry.customMax || ""}
+                              onChange={(e) => updateEntry(i, "customMax", e.target.value)}
+                              placeholder="e.g. 100"
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[11px] text-gray-400 mb-1">Category</label>
+                            <select
+                              value={entry.customCategory || "Other"}
+                              onChange={(e) => updateEntry(i, "customCategory", e.target.value)}
+                              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                            >
+                              {categoryOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // ─── Standard metric row ───
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
                   const metric = allMetrics.find((m) => m.id === entry.metricId);
                   if (!metric) return null;
                   const numVal = parseFloat(entry.value);
@@ -253,11 +441,19 @@ export function ManualEntry() {
             {entries.length > 0 && (
               <button
                 onClick={handleSave}
+<<<<<<< HEAD
                 disabled={entries.filter(e => e.value).length === 0 || saving}
                 className="mt-4 w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {saving ? 'Saving...' : `Save ${entries.filter(e => e.value).length > 0 ? entries.filter(e => e.value).length + ' ' : ''}Health Values`}
+=======
+                disabled={filledCount === 0 || saving}
+                className="mt-4 w-full py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? "Saving..." : `Save ${filledCount > 0 ? filledCount + " " : ""}Health Values`}
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
               </button>
             )}
           </div>
@@ -302,9 +498,17 @@ export function ManualEntry() {
               </button>
             ))}
           </div>
+<<<<<<< HEAD
           <div className="space-y-1.5 max-h-[450px] overflow-y-auto">
             {filteredMetrics.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-4">All metrics added!</p>
+=======
+          <div className="space-y-1.5 max-h-[380px] overflow-y-auto mb-3">
+            {filteredMetrics.length === 0 && !search ? (
+              <p className="text-xs text-gray-400 text-center py-4">All metrics added!</p>
+            ) : filteredMetrics.length === 0 ? (
+              <p className="text-xs text-gray-400 text-center py-4">No metrics found</p>
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
             ) : (
               filteredMetrics.map((m) => (
                 <button
@@ -321,6 +525,20 @@ export function ManualEntry() {
               ))
             )}
           </div>
+<<<<<<< HEAD
+=======
+
+          {/* Custom metric divider */}
+          <div className="border-t border-gray-100 pt-3">
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Can't find your metric?</p>
+            <button
+              onClick={addCustomEntry}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 border-dashed border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-colors text-sm font-semibold"
+            >
+              <PenLine className="w-4 h-4" /> Add Custom Metric
+            </button>
+          </div>
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
         </div>
       </div>
     </div>

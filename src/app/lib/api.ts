@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 const BASE_URL = `${window.location.protocol}//${window.location.hostname}:3001/api`;
+=======
+export const ASSET_URL = import.meta.env.VITE_ASSET_URL || "";
+const BASE_URL = import.meta.env.VITE_API_URL || `${ASSET_URL}/api`;
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 
 function getToken(): string | null {
   return localStorage.getItem('hv_token');
@@ -51,6 +56,23 @@ export const api = {
 
   getReports: () => authFetch('/reports'),
 
+<<<<<<< HEAD
+=======
+  downloadReport: async (id: string | number, filename: string) => {
+    const res = await apiFetch(`/reports/download/${id}`);
+    if (!res.ok) throw new Error('Download failed');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename.endsWith('.pdf') ? filename : filename + '.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  },
+
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
   // Metrics
   getMetrics: () => authFetch('/metrics'),
 
@@ -76,4 +98,16 @@ export const api = {
 
   markAllAlertsRead: () =>
     authFetch('/alerts/read-all', { method: 'PATCH' }),
+<<<<<<< HEAD
+=======
+
+  // Cycle tracking
+  getCycleLogs: () => authFetch('/cycle'),
+  logCycle: (data: object) =>
+    authFetch('/cycle', { method: 'POST', body: JSON.stringify(data) }),
+  updateCycleLog: (id: number, data: object) =>
+    authFetch(`/cycle/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  deleteCycleLog: (id: number) =>
+    authFetch(`/cycle/${id}`, { method: 'DELETE' }),
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 };

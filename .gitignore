@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+.env
+=======
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 node_modules
 backend/.env
 # Node modules
@@ -27,3 +33,7 @@ Thumbs.db
 # Editor folders
 .vscode/
 .idea/
+<<<<<<< HEAD
+=======
+>>>>>>> 871a0665dab4a7469f8242dfd083f93748b3b713
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf

@@ -12,6 +12,10 @@ import { ManualEntry } from "./pages/ManualEntry";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Analytics } from "./pages/Analytics";
+<<<<<<< HEAD
+=======
+import { CycleTracker } from "./pages/CycleTracker";
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function ProtectedLayout() {
@@ -38,6 +42,10 @@ export const router = createBrowserRouter([
       { path: "manual-entry", Component: ManualEntry },
       { path: "ai-assistant", Component: AIAssistant },
       { path: "analytics", Component: Analytics },
+<<<<<<< HEAD
+=======
+      { path: "cycle", Component: CycleTracker },
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
       { path: "profile", Component: Profile },
     ],
   },

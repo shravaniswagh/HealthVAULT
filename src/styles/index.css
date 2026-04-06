@@ -2,8 +2,32 @@
 @import './tailwind.css';
 @import './theme.css';
 
+<<<<<<< HEAD
 body {
   font-family: 'Inter', sans-serif;
+=======
+/* Default HealthVault theme variables (overridden by ThemeContext) */
+:root {
+  --hv-primary: #3B82F6;
+  --hv-primary-light: #EFF6FF;
+  --hv-primary-lighter: #DBEAFE;
+  --hv-primary-dark: #1D4ED8;
+  --hv-ring: #BFDBFE;
+  --hv-bg: #F0F4F8;
+  --hv-surface: #FFFFFF;
+  --hv-surface-2: #F8FAFC;
+  --hv-border: #E2E8F0;
+  --hv-text: #0F172A;
+  --hv-text-muted: #64748B;
+  --hv-sidebar: #FFFFFF;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--hv-bg);
+  color: var(--hv-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 }
 
 /* Custom scrollbar */
@@ -15,9 +39,17 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
+<<<<<<< HEAD
   background: #d1d5db;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+=======
+  background: var(--hv-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hv-text-muted);
+>>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 }
