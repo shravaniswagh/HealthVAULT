@@ -1,6 +1,6 @@
 # 🏥 HealthVAULT – Health Tracking Dashboard
 
-<p align="center">
+<p>
   <b>A full-stack health management platform to store, track, and manage medical data securely.</b>
 </p>
 
