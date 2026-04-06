@@ -13,6 +13,10 @@ const pool = new Pool({
   ssl: useSSL ? { rejectUnauthorized: false } : false
 });
 
+// Log connection info (safely)
+const maskedUrl = process.env.DATABASE_URL.replace(/:\/\/.*@/, '://***:***@');
+console.log(`Connecting to database: ${maskedUrl}`);
+
 async function initDB() {
   const client = await pool.connect();
   try {
