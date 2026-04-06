@@ -86,9 +86,10 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
     // Rename to include extension
     fs.renameSync(file.path, newPath);
 
+    let ocrErrorMsg = null;
     try {
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_KEY is missing in backend environment');
+      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY.includes('YOUR_API_KEY')) {
+        throw new Error('GEMINI_API_KEY is missing or not configured in backend .env');
       }
       
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -129,7 +130,10 @@ If you cannot extract metrics, return: {"metrics": [], "reportName": "", "lab": 
       const text = result.response.text();
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
+        let cleanText = jsonMatch[0];
+        // Remove markdown code blocks if the regex didn't catch them perfectly
+        cleanText = cleanText.replace(/```json/g, '').replace(/```/g, '');
+        const parsed = JSON.parse(cleanText);
         extractedMetrics = parsed.metrics || [];
         if (parsed.reportName) parsedReportName = parsed.reportName;
         if (parsed.lab) parsedLab = parsed.lab;
@@ -137,9 +141,12 @@ If you cannot extract metrics, return: {"metrics": [], "reportName": "", "lab": 
       } else {
         throw new Error('Failed to parse JSON from Gemini response');
       }
-    } catch (ocrError) {
-      console.error('OCR error:', ocrError);
-      // We don't delete the file, so user can still see what they uploaded
+    } catch (ocrErr) {
+      console.error('OCR error:', ocrErr.message);
+      ocrErrorMsg = ocrErr.message;
+      if (ocrErrorMsg.includes('403') || ocrErrorMsg.includes('PERMISSION_DENIED') || ocrErrorMsg.includes('API_KEY_INVALID')) {
+        ocrErrorMsg = 'Invalid Gemini API Key. Please check your .env file and ensure the API is enabled in Google AI Studio.';
+      }
     }
 
     // Insert report
@@ -221,6 +228,7 @@ If you cannot extract metrics, return: {"metrics": [], "reportName": "", "lab": 
         metrics_count: insertedMetrics.length,
       },
       metrics: insertedMetrics,
+      extractionError: ocrErrorMsg
     });
   } catch (err) {
     console.error('Upload error:', err);

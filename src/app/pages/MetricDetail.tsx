@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import {
   ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle,
-  Activity, Brain, ChevronRight, RefreshCw,
+  Activity, Brain, ChevronRight, RefreshCw, Info, Target, HeartPulse
 } from "lucide-react";
 import { api } from "../lib/api";
 
@@ -41,17 +41,48 @@ export function MetricDetail() {
   const [metric, setMetric] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [insightData, setInsightData] = useState<any>(null);
+  const [loadingInsight, setLoadingInsight] = useState(false);
+  const [insightError, setInsightError] = useState(false);
 
   useEffect(() => {
     if (!id) return;
+    setLoading(true);
+    setInsightData(null);
+    setInsightError(false);
     api.getMetric(id)
       .then((data) => {
-        setMetric(data.metric);
+        setMetric(data);
         setHistory(data.history || []);
       })
       .catch(() => setMetric(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const generateInsights = () => {
+    if (!id) return;
+    setLoadingInsight(true);
+    setInsightError(false);
+    api.getMetricInsights(id)
+      .then((res) => {
+        const text = res.insight || "";
+        const whatItIs = text.match(/WHAT IT IS:\s*([\s\S]*?)(?=WHY IT IS IMPORTANT:|$)/i)?.[1].trim() || "";
+        const whyImportant = text.match(/WHY IT IS IMPORTANT:\s*([\s\S]*?)(?=NORMAL RANGE:|$)/i)?.[1].trim() || "";
+        const normalRange = text.match(/NORMAL RANGE:\s*([\s\S]*?)(?=HOW TO IMPROVE IT:|$)/i)?.[1].trim() || "";
+        const howToImprove = text.match(/HOW TO IMPROVE IT:\s*([\s\S]*?)$/i)?.[1].trim() || "";
+        
+        if (whatItIs || whyImportant || normalRange || howToImprove) {
+          setInsightData({ whatItIs, whyImportant, normalRange, howToImprove });
+        } else {
+          setInsightError(true);
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        setInsightError(true);
+      })
+      .finally(() => setLoadingInsight(false));
+  };
 
   if (loading) {
     return <div className="flex items-center justify-center h-64"><RefreshCw className="w-6 h-6 animate-spin text-blue-500" /></div>;
@@ -215,6 +246,75 @@ export function MetricDetail() {
               </table>
             </div>
           </div>
+          
+          {/* AI Insights Section */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100/50 rounded-full blur-3xl -mr-10 -mt-10" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-md shadow-blue-200">
+                  <Brain className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">AI Medical Insights</h3>
+                  <p className="text-xs text-blue-600 font-medium">Personalized analysis by HealthVault AI</p>
+                </div>
+              </div>
+
+              {loadingInsight ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                  <RefreshCw className="w-8 h-8 text-blue-400 animate-spin" />
+                  <p className="text-sm text-blue-600 font-medium animate-pulse">Generating your personalized insights...</p>
+                </div>
+              ) : insightData ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-blue-100/50 hover:bg-white transition-colors duration-300">
+                    <div className="flex items-center gap-2 mb-2 border-b border-blue-50 pb-2">
+                       <Info className="w-4 h-4 text-blue-500" />
+                       <h4 className="font-semibold text-gray-800 text-sm">What is {metric.name}?</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{insightData.whatItIs || "Information not available."}</p>
+                  </div>
+                  
+                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-blue-100/50 hover:bg-white transition-colors duration-300">
+                     <div className="flex items-center gap-2 mb-2 border-b border-blue-50 pb-2">
+                       <Target className="w-4 h-4 text-purple-500" />
+                       <h4 className="font-semibold text-gray-800 text-sm">Why It Matters</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{insightData.whyImportant || "Information not available."}</p>
+                  </div>
+                  
+                  <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-blue-100/50 hover:bg-white transition-colors duration-300 md:col-span-2">
+                    <div className="flex items-center gap-2 mb-2 border-b border-blue-50 pb-2">
+                       <Activity className="w-4 h-4 text-emerald-500" />
+                       <h4 className="font-semibold text-gray-800 text-sm">Understanding Your Level</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed"><strong className="text-gray-800">Normal Range:</strong> {insightData.normalRange || "Information not available."}</p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl p-[1px] md:col-span-2 shadow-sm">
+                    <div className="bg-white rounded-[11px] p-5 h-full">
+                       <div className="flex items-center gap-2 mb-3">
+                         <HeartPulse className="w-5 h-5 text-blue-500" />
+                         <h4 className="font-bold text-gray-900 text-base">How to Improve</h4>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed mt-2 p-3 bg-blue-50/50 rounded-lg whitespace-pre-line">{insightData.howToImprove || "Ask the AI assistant for more tips."}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center space-y-4 py-6 bg-white/40 rounded-xl border border-white/50">
+                  <p className="text-sm text-gray-600">Want to understand these numbers better? Our AI can analyze your current level and provide actionable advice.</p>
+                  <button onClick={generateInsights} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-blue-200 flex items-center gap-2">
+                    <Brain className="w-4 h-4" /> Generate Insights
+                  </button>
+                  {insightError && (
+                    <p className="text-xs text-red-500 mt-2">Could not generate AI insights at this time. Please try again.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Side panel */}
@@ -237,19 +337,7 @@ export function MetricDetail() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Brain className="w-4 h-4 text-blue-500" />
-              <h3 className="font-semibold text-gray-800">AI Insights</h3>
-            </div>
-            <p className="text-xs text-gray-500 leading-relaxed mb-3">
-              Ask the AI assistant for a detailed analysis of your {metric.name} readings and personalized recommendations.
-            </p>
-            <button onClick={() => navigate("/ai-assistant")}
-              className="w-full py-2 rounded-xl bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
-              Ask AI Assistant <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+
 
           <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-3">Actions</h3>

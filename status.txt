@@ -1,0 +1,62 @@
+ M README.md
+ M backend/.env
+ M backend/db.js
+ M backend/index.js
+ M backend/node_modules/.package-lock.json
+ M backend/node_modules/@google/generative-ai/README.md
+ M backend/node_modules/@google/generative-ai/dist/generative-ai.d.ts
+ M backend/node_modules/@google/generative-ai/dist/index.js
+ M backend/node_modules/@google/generative-ai/dist/index.js.map
+ M backend/node_modules/@google/generative-ai/dist/index.mjs
+ M backend/node_modules/@google/generative-ai/dist/index.mjs.map
+ M backend/node_modules/@google/generative-ai/dist/server/index.js
+ M backend/node_modules/@google/generative-ai/dist/server/index.js.map
+ M backend/node_modules/@google/generative-ai/dist/server/index.mjs
+ M backend/node_modules/@google/generative-ai/dist/server/index.mjs.map
+ M backend/node_modules/@google/generative-ai/dist/server/server.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/src/errors.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/src/methods/chat-session-helpers.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/src/server/file-manager.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/types/enums.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/types/function-calling.d.ts
+ M backend/node_modules/@google/generative-ai/dist/server/types/search-grounding.d.ts
+ M backend/node_modules/@google/generative-ai/dist/src/errors.d.ts
+ M backend/node_modules/@google/generative-ai/dist/src/methods/chat-session-helpers.d.ts
+ M backend/node_modules/@google/generative-ai/dist/src/server/file-manager.d.ts
+ M backend/node_modules/@google/generative-ai/dist/tsdoc-metadata.json
+ M backend/node_modules/@google/generative-ai/dist/types/enums.d.ts
+ M backend/node_modules/@google/generative-ai/dist/types/function-calling.d.ts
+ M backend/node_modules/@google/generative-ai/dist/types/search-grounding.d.ts
+ M backend/node_modules/@google/generative-ai/package.json
+ M backend/package-lock.json
+ M backend/package.json
+ M backend/routes/metrics.js
+ M backend/routes/reports.js
+ M src/app/lib/api.ts
+ M src/app/pages/MetricDetail.tsx
+ M src/app/pages/UploadReport.tsx
+?? backend/diagnose-api.js
+?? backend/full_models_list.txt
+?? backend/list-models-rest.js
+?? backend/simulate-upload.js
+?? backend/test-curl.ps1
+?? backend/test-models.js
+?? backend/test-modern.js
+?? backend/test-ocr-v2.js
+?? backend/test-ocr.js
+?? backend/test-pro.js
+?? backend/test_output.txt
+?? backend/uploads/1b5354ed083d9ebf1f5b42779ed0c5ac.pdf
+?? backend/uploads/399bc3a0abfd0f22f9927a76895e2216.pdf
+?? backend/uploads/3ad2b9f86e3814de20ce091698a98ce8.jpg
+?? backend/uploads/5e9f7f9d630a9c76fc585a8e1d5ff085.pdf
+?? backend/uploads/5ee2f96d7c11178418de2b0be2849c67.pdf
+?? backend/uploads/8a522ac4dbdcea9059be46639c7a1ed2.pdf
+?? backend/uploads/8b4745123e0767c09452d5b6717bb0f6.jpg
+?? backend/uploads/8c00e516fdbd70411f41aa1408273e11.pdf
+?? backend/uploads/99910d5c0f2c482852b1767d3ff0f902.jpg
+?? backend/uploads/ad311d541d2925fccfba93c5a705f80e.pdf
+?? backend/uploads/b2d0d8eed910f0701780f0c8c4903ffc.pdf
+?? backend/uploads/bc5715b5091523e118b35320571cd3b3.pdf
+?? backend/uploads/bdbb2cb47fce6b21af0c2c4284af34a4.pdf
+?? status.txt

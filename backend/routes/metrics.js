@@ -4,6 +4,8 @@ const db = require('../db');
 const authMiddleware = require('../middleware/auth');
 const { getMetricInsights } = require('../utils/metricInsights');
 
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 // GET /api/metrics — latest value per metric name for user
 router.get('/', authMiddleware, async (req, res) => {
   try {
@@ -60,6 +62,50 @@ router.get('/:id', authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error fetching metric history' });
+  }
+});
+
+// GET /api/metrics/:id/insights — generate AI insights for a metric
+router.get('/:id/insights', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM metrics WHERE id = $1 AND user_id = $2', [req.params.id, req.user.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Metric not found' });
+    const metric = rows[0];
+
+    if (!process.env.GEMINI_API_KEY) {
+       return res.status(500).json({ error: 'GEMINI_API_KEY not configured on server' });
+    }
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    const prompt = `You are a medical AI assistant for the HealthVault platform. 
+The user has a health metric recorded:
+- Name: ${metric.name}
+- Current Value: ${metric.value} ${metric.unit || ''}
+- Normal Range: ${metric.normal_min !== null ? metric.normal_min : 'Unknown'} - ${metric.normal_max !== null ? metric.normal_max : 'Unknown'}
+- Status: ${metric.status}
+
+Please explain the following clearly and concisely. Format your response into these exactly matching four sections:
+
+WHAT IT IS:
+[Explain what this metric is in simple terms]
+
+WHY IT IS IMPORTANT:
+[Explain why this metric matters for overall health]
+
+NORMAL RANGE:
+[Explain the normal range, indicating if the user's value is normal, high, or low]
+
+HOW TO IMPROVE IT:
+[Provide actionable advice to make this metric better (increase, decrease, or maintain) based explicitly on their current level]`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    res.json({ insight: text });
+  } catch (err) {
+    console.error('Insights error:', err.message);
+    res.status(500).json({ error: 'Failed to generate insight: ' + err.message });
   }
 });
 
