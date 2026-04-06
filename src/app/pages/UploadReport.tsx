@@ -30,6 +30,7 @@ export function UploadReport() {
   const [notes, setNotes] = useState("");
   const [uploadResult, setUploadResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [extractionError, setExtractionError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -76,6 +77,7 @@ export function UploadReport() {
         normal: `${m.normal_min ?? '?'}–${m.normal_max ?? '?'}`,
         confidence: 95,
       })));
+      setExtractionError(result.extractionError || null);
 
       setTimeout(() => setStep("review"), 500);
     } catch (err: any) {
@@ -260,8 +262,12 @@ export function UploadReport() {
       ) : (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-center">
           <AlertTriangle className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-          <p className="text-amber-800 font-medium text-sm">No health values could be extracted</p>
-          <p className="text-amber-600 text-xs mt-1">The file may not be a health report, or the image was unclear. The report was still saved.</p>
+          <p className="text-amber-800 font-medium text-sm">
+            {extractionError ? "AI Extraction Failed" : "No health values could be extracted"}
+          </p>
+          <p className="text-amber-600 text-xs mt-1">
+            {extractionError ? extractionError : "The file may not be a health report, or the image was unclear. The report was still saved."}
+          </p>
         </div>
       )}
 
