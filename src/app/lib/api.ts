@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = `${window.location.protocol}//${window.location.hostname}:3001/api`;
 
 function getToken(): string | null {
   return localStorage.getItem('hv_token');
@@ -55,6 +55,8 @@ export const api = {
   getMetrics: () => authFetch('/metrics'),
 
   getMetric: (id: string | number) => authFetch(`/metrics/${id}`),
+
+  getMetricInsights: (id: string | number) => authFetch(`/metrics/${id}/insights`),
 
   createMetric: (data: object) =>
     authFetch('/metrics', { method: 'POST', body: JSON.stringify(data) }),
