@@ -5,10 +5,11 @@ import {
   PolarAngleAxis, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   PieChart, Pie, Cell
 } from 'recharts';
-import { TrendingUp, BarChart2, Download, Activity, RefreshCw, AlertTriangle, FileText, CheckCircle, List } from 'lucide-react';
+import { TrendingUp, BarChart2, Download, Activity, RefreshCw, AlertTriangle, FileText, CheckCircle, List,  BrainCircuit } from 'lucide-react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import generatePDF from 'react-to-pdf';
+import { predictDiabetesRisk } from '../lib/healthML';
 
 interface AnalyticsData {
   overallScore: number;
@@ -95,6 +96,14 @@ export function Analytics() {
       return acc;
     }, {})
   ).sort((a: any, b: any) => a.name.localeCompare(b.name));
+  const bmiEntry = latestMetrics.find((m: any) => m.name.toUpperCase() === 'BMI');
+  const bpEntry = latestMetrics.find((m: any) => m.name.toLowerCase().includes('systolic'));
+  
+  // Call ML logic (passing 0 or undefined if data isn't found yet)
+  const aiRisk = predictDiabetesRisk({ 
+    bmi: bmiEntry?.value, 
+    systolicBP: bpEntry?.value 
+  });
 
   // Dynamic Theming based on gender
   const isFemale = user?.gender === 'female';
@@ -150,6 +159,28 @@ export function Analytics() {
             <h1 className="text-3xl font-bold text-gray-900">HealthVault Analytics Report</h1>
             <p className="text-gray-500 mt-2">Generated on {new Date().toLocaleDateString()}</p>
         </div>
+
+        {/* --- AI PREDICTIVE INSIGHT START --- */}
+        <div className={`${aiRisk.color} rounded-3xl p-6 mb-8 text-white shadow-lg flex flex-col md:flex-row items-center gap-6 transform transition-all hover:scale-[1.01] border border-white/10`}>
+          <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-inner">
+            <BrainCircuit className="w-8 h-8 text-white" />
+          </div>
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+              <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-md">AI Health Analysis</span>
+              {(!bmiEntry || !bpEntry) && (
+                <span className="text-[10px] font-medium opacity-70 italic text-white/80">Using baseline defaults</span>
+              )}
+            </div>
+            <h3 className="text-2xl font-black tracking-tight">Diabetes Risk: {aiRisk.level}</h3>
+            <p className="text-white/90 text-sm font-medium mt-1 leading-relaxed max-w-2xl">
+              {aiRisk.message} 
+              <span className="opacity-60 ml-2">(Analysis based on BMI: {bmiEntry?.value || 'N/A'} and BP: {bpEntry?.value || 'N/A'})</span>
+            </p>
+          </div>
+        </div>
+        {/* --- AI PREDICTIVE INSIGHT END --- */}
+
 
         {/* Summary Stat Cards */}
         {data.summaryStats && (
