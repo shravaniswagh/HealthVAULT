@@ -1,0 +1,53 @@
+commit b6385d0a4ca5e8458a864ba7cce0fe738847e269
+Author: Antigravity <antigravity@google.com>
+Date:   Mon Apr 6 14:02:33 2026 +0530
+
+    Resolve merge conflict and remove env file
+
+diff --git a/backend/.env b/backend/.env
+deleted file mode 100644
+index c7b4ac74..00000000
+--- a/backend/.env
++++ /dev/null
+@@ -1,4 +0,0 @@
+-GEMINI_API_KEY=
+-JWT_SECRET=healthvault_super_secret_jwt_key_2024
+-PORT=3001
+-DATABASE_URL=postgresql://postgres:root@localhost:5433/medical_history
+
+commit aa8ff0dfe53376a2a155b28f240e752ff8a3d5ef
+Author: shravanisw <155523596+shravaniswagh@users.noreply.github.com>
+Date:   Mon Apr 6 13:48:22 2026 +0530
+
+    Update .env
+
+diff --git a/backend/.env b/backend/.env
+index 69563aed..c7b4ac74 100644
+--- a/backend/.env
++++ b/backend/.env
+@@ -1,4 +1,4 @@
+-GEMINI_API_KEY=AIzaSyAlsK2Q87zlp5O4vNdWGFwKT26JzDoI9qg
++GEMINI_API_KEY=
+ JWT_SECRET=healthvault_super_secret_jwt_key_2024
+ PORT=3001
+-DATABASE_URL=postgresql://postgres:root@localhost:5433/medical_history
+\ No newline at end of file
++DATABASE_URL=postgresql://postgres:root@localhost:5433/medical_history
+
+commit 33bfede512a79bdd0399842abfc875e69ea6d633
+Author: shravanisw <shravanisw225@gmail.com>
+Date:   Tue Mar 17 10:28:33 2026 +0530
+
+    first commit
+
+diff --git a/backend/.env b/backend/.env
+new file mode 100644
+index 00000000..69563aed
+--- /dev/null
++++ b/backend/.env
+@@ -0,0 +1,4 @@
++GEMINI_API_KEY=AIzaSyAlsK2Q87zlp5O4vNdWGFwKT26JzDoI9qg
++JWT_SECRET=healthvault_super_secret_jwt_key_2024
++PORT=3001
++DATABASE_URL=postgresql://postgres:root@localhost:5433/medical_history
+\ No newline at end of file
