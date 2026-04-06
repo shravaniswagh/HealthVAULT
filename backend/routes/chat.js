@@ -11,16 +11,13 @@ router.post('/', authMiddleware, async (req, res) => {
     return res.status(400).json({ error: 'messages array is required' });
   }
 
-<<<<<<< HEAD
-=======
   if (!process.env.GEMINI_API_KEY) {
     return res.status(500).json({ error: 'GEMINI_API_KEY not configured on server' });
   }
 
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // Build health context from DB if not provided
     let healthContext = userHealthContext;
@@ -40,12 +37,7 @@ router.post('/', authMiddleware, async (req, res) => {
       }
     }
 
-<<<<<<< HEAD
-    const systemPrompt = `You are a knowledgeable, empathetic AI Health Assistant for the HealthVault platform. 
-You help users understand their health metrics, lab reports, and provide evidence-based lifestyle recommendations.
-=======
     const systemPromptText = `You are a knowledgeable, empathetic AI Health Assistant for the HealthVault platform. You help users understand their health metrics, lab reports, and provide evidence-based lifestyle recommendations.
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 
 ${healthContext ? `The user's current health metrics:\n${healthContext}\n` : 'The user has no health metrics recorded yet.'}
 
@@ -56,49 +48,24 @@ Guidelines:
 - Keep responses concise but complete
 - Reference the user's actual data when relevant`;
 
-<<<<<<< HEAD
-    // Convert messages to Gemini format
-    let startIndex = 0;
-    while (startIndex < messages.length - 1 && messages[startIndex].role === 'assistant') {
-      startIndex++;
+    // Filter and format messages for Gemini
+    const chatMessages = messages.filter(m => m.role === 'user' || m.role === 'assistant');
+    if (chatMessages.length === 0) {
+      return res.status(400).json({ error: 'No user messages provided' });
     }
-    
-    const history = messages.slice(startIndex, -1).map(m => ({
+
+    const history = chatMessages.slice(0, -1).map(m => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
 
-    const lastMessage = messages[messages.length - 1];
-    
-    // Check missing API Key
-    if (!process.env.GEMINI_API_KEY) {
-       return res.status(500).json({ error: 'GEMINI_API_KEY not configured on server' });
-    }
-    
-    const chat = model.startChat({
+    const lastMessage = chatMessages[chatMessages.length - 1];
+
+    const chat = model.startChat({ 
       history,
-      systemInstruction: systemPrompt,
+      systemInstruction: systemPromptText 
     });
 
-=======
-    // Convert frontend messages to Gemini history format.
-    // Inject system prompt as the very first user/model exchange so Gemini
-    // understands context without echoing the prompt back.
-    const userMessages = messages.slice(0, -1).filter(m => m.role === 'user' || m.role === 'assistant');
-
-    const history = [
-      { role: 'user', parts: [{ text: systemPromptText }] },
-      { role: 'model', parts: [{ text: 'Understood. I am ready to assist as a HealthVault AI Health Assistant.' }] },
-      ...userMessages.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }]
-      }))
-    ];
-
-    const lastMessage = messages[messages.length - 1];
-
-    const chat = model.startChat({ history });
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
     const result = await chat.sendMessage(lastMessage.content);
     const responseText = result.response.text();
 
@@ -110,7 +77,4 @@ Guidelines:
 });
 
 module.exports = router;
-<<<<<<< HEAD
-=======
 
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf

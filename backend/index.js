@@ -28,18 +28,13 @@ app.use('/api/metrics', require('./routes/metrics'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/alerts', require('./routes/alerts'));
-<<<<<<< HEAD
-=======
 app.use('/api/cycle', require('./routes/cycle'));
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-<<<<<<< HEAD
-=======
 // Serve frontend in production/Docker
 const staticDistPath = path.join(__dirname, '../dist');
 if (fs.existsSync(staticDistPath)) {
@@ -50,7 +45,6 @@ if (fs.existsSync(staticDistPath)) {
   });
 }
 
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
 app.listen(PORT, () => {
   console.log(`HealthVault backend running on http://localhost:${PORT}`);
 });

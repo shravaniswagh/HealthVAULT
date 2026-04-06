@@ -250,9 +250,7 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 module.exports = router;
-=======
 // GET /api/reports/download/:id — force-download the original PDF
 router.get('/download/:id', authMiddleware, async (req, res) => {
   try {
@@ -277,4 +275,3 @@ router.get('/download/:id', authMiddleware, async (req, res) => {
 
 module.exports = router;
 
->>>>>>> f346220b8367c7f770d8d6b55a1e314826d9ffdf
